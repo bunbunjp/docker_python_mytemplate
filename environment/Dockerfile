@@ -1,5 +1,7 @@
 # OSはCentOS
 FROM centos:latest
+# Pythonは公式イメージ
+# FROM python:3.6
 
 # 各パッケージをインストール
 # pipやvirtualenvインストールも想定しています。
@@ -42,28 +44,6 @@ RUN yum -y install \
 
 RUN ln -s -f /usr/bin/python3.6 /usr/bin/python
 
-# # pipインストール(最新版)
-# RUN wget https://bootstrap.pypa.io/get-pip.py
-# RUN python get-pip.py
-#
-# # readlineインストール
-# RUN pip install readline
-#
-# # virtualenvインストール
-# RUN pip install virtualenv
-#
-# # Djangoインストール
-# RUN pip install django
-#
-# # おまけ
-# # Django以外のフレームワークインストール
-# bottleインストール
-# RUN pip install bottle
-#
-# # Flaskインストール
-# RUN pip install Flask
-
-
 ARG USERNAME=USERNAME
 ARG USERID=USERID
 ARG PROJECT_NAME=PROJECT_NAME
@@ -71,12 +51,13 @@ ARG PROJECT_NAME=PROJECT_NAME
 RUN adduser --uid ${USERID} ${USERNAME}
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
-
-RUN pip3.6 install virtualenv --user
-RUN python -m venv venv
-RUN source venv/bin/activate
-# RUN sed "s/,/\n/g" "${REQUIREMENTS}" > requirements.txt
-# RUN pip3.6 install -r requirements.txt
-
-
 CMD ["/bin/bash"]
+
+COPY "./requirements.txt" ./
+
+# RUN pip3.6 install virtualenv --user
+# RUN python -m venv venv
+# RUN source venv/bin/activate
+RUN pip3.6 install -r requirements.txt --user
+
+EXPOSE 8000
