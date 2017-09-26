@@ -56,4 +56,5 @@ do
     VOLUME_OPT="${VOLUME_OPT} -v ${BASEDIR}/${D}:${PROJECT_DIR}/${D}"
 done
 
-docker run -it -i -p 8000:8000 ${VOLUME_OPT} ${PROJECT_NAME} python ${PROJECT_NAME}/app/manage.py runserver 0.0.0.0:8000
+docker-compose run --rm app
+# docker run -it -i -p 8000:8000 ${VOLUME_OPT} ${PROJECT_NAME} python ${PROJECT_NAME}/app/manage.py runserver 0.0.0.0:8000

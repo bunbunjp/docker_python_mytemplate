@@ -1,7 +1,5 @@
 # OSはCentOS
 FROM centos:latest
-# Pythonは公式イメージ
-# FROM python:3.6
 
 # 各パッケージをインストール
 # pipやvirtualenvインストールも想定しています。
@@ -36,8 +34,9 @@ RUN yum -y install \
            openssl \
            openssl-devel \
            git \
-           gdbm-devel \
-           python36u \
+           gdbm-devel
+
+RUN yum -y install \
            python36u-libs \
            python36u-devel \
            python36u-pip
@@ -59,5 +58,12 @@ COPY "./requirements.txt" ./
 # RUN python -m venv venv
 # RUN source venv/bin/activate
 RUN pip3.6 install -r requirements.txt --user
+
+# defaultのlocaleをja_JP.UTF-8にする
+ENV LANG=ja_JP.UTF-8
+RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+
+RUN \cp -p /usr/share/zoneinfo/Japan /etc/localtime \
+&& echo 'ZONE="Asia/Tokyo"' > /etc/sysconfig/clock
 
 EXPOSE 8000
