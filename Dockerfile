@@ -1,6 +1,17 @@
 # OSはCentOS
 FROM centos:latest
 
+ARG USERNAME
+ARG USERID
+ARG PROJECT_NAME
+
+# defaultのlocaleをja_JP.UTF-8にする
+ENV LANG=ja_JP.UTF-8
+RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
+
+RUN \cp -p /usr/share/zoneinfo/Japan /etc/localtime \
+&& echo 'ZONE="Asia/Tokyo"' > /etc/sysconfig/clock
+
 # 各パッケージをインストール
 # pipやvirtualenvインストールも想定しています。
 RUN yum -y install https://centos7.iuscommunity.org/ius-release.rpm
@@ -43,9 +54,9 @@ RUN yum -y install \
 
 RUN ln -s -f /usr/bin/python3.6 /usr/bin/python
 
-ARG USERNAME=USERNAME
-ARG USERID=USERID
-ARG PROJECT_NAME=PROJECT_NAME
+# ARG USERNAME=USERNAME
+# ARG USERID=USERID
+# ARG PROJECT_NAME=PROJECT_NAME
 
 RUN adduser --uid ${USERID} ${USERNAME}
 USER ${USERNAME}
@@ -58,12 +69,5 @@ COPY "./requirements.txt" ./
 # RUN python -m venv venv
 # RUN source venv/bin/activate
 RUN pip3.6 install -r requirements.txt --user
-
-# defaultのlocaleをja_JP.UTF-8にする
-ENV LANG=ja_JP.UTF-8
-RUN localedef -f UTF-8 -i ja_JP ja_JP.UTF-8
-
-RUN \cp -p /usr/share/zoneinfo/Japan /etc/localtime \
-&& echo 'ZONE="Asia/Tokyo"' > /etc/sysconfig/clock
 
 EXPOSE 8000

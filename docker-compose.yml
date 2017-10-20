@@ -3,14 +3,17 @@ version: '3'
 services:
   db:
     image: mysql
-  app:
-    build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
-    volumes:
-      - ./app:~/app
-    ports:
-      - "8000:8000"
+    restart: always
     environment:
-      - USERNAME="${USERNAME}"
-      - USERID="${USERID}"
-      - PROJECT_NAME="${PROJECT_NAME}"
+        MYSQL_ROOT_PASSWORD: example
+  webapp:
+    build: .
+    command: ["python", "/home/${USERNAME}/app/manage.py", "runserver", "0.0.0.0:8000"]
+    links:
+      - db
+    volumes:
+      - ./app:/home/${USERNAME}/app
+    environment:
+      - USERNAME
+      - USERID
+      - PROJECT_NAME
