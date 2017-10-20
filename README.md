@@ -1,4 +1,4 @@
 # Docker Django template
 
 Dockerとdjangoを使ったプロジェクトテンプレートです。
-(作成中)
+OSContainer(CentOS)の上に動かすようになっています。

@@ -15,7 +15,7 @@ PROJECT_NAME=`pwd |xargs basename`
 ARG="--build-arg USERID=${USERID}"
 ARG="${ARG} --build-arg USERNAME=${USERNAME}"
 ARG="${ARG} --build-arg PROJECT_NAME=${PROJECT_NAME}"
-ARG="${ARG} --build-arg REQUIREMENTS=${REQUIREMENTS}"
+# ARG="${ARG} -e REQUIREMENTS=${REQUIREMENTS}"
 
 VOLUMES=("app" "var")
 VOLUME_OPT=""
@@ -49,11 +49,8 @@ done
 if [ "$BUILD_MODE" ]; then
     # Dockerfileに基づいてdocker build
     docker build --force-rm -t ${PROJECT_NAME} ${ENV_PATH} ${ARG}
+    docker-compose build --force-rm --no-cache ${ARG} webapp
 fi
 
-for D in ${VOLUMES[@]}
-do
-    VOLUME_OPT="${VOLUME_OPT} -v ${BASEDIR}/${D}:${PROJECT_DIR}/${D}"
-done
-
-docker run -it -i -p 8000:8000 ${VOLUME_OPT} ${PROJECT_NAME} python ${PROJECT_NAME}/app/manage.py runserver 0.0.0.0:8000
+docker-compose run --publish 8000:8000 --publish 3306:3306 webapp
+# docker run -it -i -p 8000:8000 ${VOLUME_OPT} ${PROJECT_NAME} python ${PROJECT_NAME}/app/manage.py runserver 0.0.0.0:8000

@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+        MYSQL_ROOT_PASSWORD: example
+  webapp:
+    build: .
+    command: ["python", "/home/${USERNAME}/app/manage.py", "runserver", "0.0.0.0:8000"]
+    links:
+      - db
+    volumes:
+      - ./app:/home/${USERNAME}/app
+    environment:
+      - USERNAME
+      - USERID
+      - PROJECT_NAME
