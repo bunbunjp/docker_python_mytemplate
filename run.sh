@@ -42,6 +42,9 @@ do
         '--build' )
             BUILD_MODE=1
             ;;
+        '--shell' )
+            SHELL_MODE=1
+            ;;
     esac
     shift
 done
@@ -50,7 +53,12 @@ if [ "$BUILD_MODE" ]; then
     # Dockerfileに基づいてdocker build
     docker build --force-rm -t ${PROJECT_NAME} ${ENV_PATH} ${ARG}
     docker-compose build --force-rm --no-cache ${ARG} webapp
+    docker-compose up -d
 fi
 
-docker-compose run --publish 8000:8000 --publish 3306:3306 webapp
+# if [ "$SHELL_MODE" ]; then
+#   docker-compose run --publish 8000:8000 --publish 3306:3306 webapp /bin/sh
+# else
+#   docker-compose up --publish 8000:8000 --publish 3306:3306 webapp
+# fi
 # docker run -it -i -p 8000:8000 ${VOLUME_OPT} ${PROJECT_NAME} python ${PROJECT_NAME}/app/manage.py runserver 0.0.0.0:8000
